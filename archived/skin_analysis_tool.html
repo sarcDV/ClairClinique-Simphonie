@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simphonie - Analisi della Pelle del Viso</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #9796f0 0%, #fbc7d4 100%);
+        }
+        
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            transition: width 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .loading-overlay {
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+        }
+        
+        .parameter-card {
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .parameter-card:hover {
+            transform: scale(1.02);
+        }
+        
+        .recommendation-card {
+            border-left: 5px solid #9796f0;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(151, 150, 240, 0.7);
+            }
+            
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(151, 150, 240, 0);
+            }
+            
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(151, 150, 240, 0);
+            }
+        }
+        
+        .animated-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Canvas overlay for face detection */
+        #faceOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 flex items-center justify-center loading-overlay">
+        <div class="text-center">
+            <div class="w-24 h-24 border-t-4 border-b-4 border-purple-500 rounded-full animate-spin"></div>
+            <p class="mt-4 text-xl font-semibold text-gray-700">Caricamento dell'app...</p>
+            <p class="text-sm text-gray-500" id="loadingStatus">Inizializzazione modelli AI</p>
+            <div class="w-64 h-4 mt-4 bg-gray-200 rounded-full">
+                <div id="loadingProgressBar" class="h-4 bg-purple-500 rounded-full progress-bar" style="width: 10%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" class="hidden min-h-screen">
+        <!-- Header -->
+        <header class="p-4 gradient-bg text-white">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-3xl font-bold">Simphonie</h1>
+                <div>
+                    <button id="helpButton" class="px-4 py-2 bg-white text-purple-600 rounded-full hover:bg-purple-100 transition-all">
+                        <i class="fas fa-question-circle mr-1"></i> Aiuto
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800 mb-3">Analisi della Pelle del Viso</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Scatta una foto del tuo viso per ricevere un'analisi dettagliata dello stato della tua pelle e consigli sui prodotti cosmetici più adatti.</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="flex justify-center mb-8">
+                <div class="flex items-center">
+                    <div id="step1" class="w-10 h-10 rounded-full flex items-center justify-center bg-purple-600 text-white">1</div>
+                    <div class="h-1 w-16 bg-purple-200">
+                        <div id="step1to2" class="h-1 bg-purple-600" style="width: 0%"></div>
+                    </div>
+                    <div id="step2" class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-300 text-gray-600">2</div>
+                    <div class="h-1 w-16 bg-purple-200">
+                        <div id="step2to3" class="h-1 bg-purple-600" style="width: 0%"></div>
+                    </div>
+                    <div id="step3" class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-300 text-gray-600">3</div>
+                </div>
+            </div>
+
+            <!-- Step Labels -->
+            <div class="flex justify-center text-sm text-gray-600 mb-10 px-4">
+                <div class="w-12 text-center mr-10">Scatta</div>
+                <div class="w-12 text-center mr-10">Analizza</div>
+                <div class="w-12 text-center">Risultati</div>
+            </div>
+
+            <!-- Camera Section -->
+            <div id="cameraSection" class="mb-8">
+                <div class="camera-container">
+                    <video id="video" autoplay playsinline class="w-full h-full"></video>
+                    <canvas id="faceOverlay" class="w-full h-full"></canvas>
+                    <div id="cameraPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <div class="text-center p-6">
+                            <i class="fas fa-camera text-5xl text-gray-400 mb-3"></i>
+                            <p class="text-gray-500">Attendi mentre attiviamo la tua fotocamera...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center mt-6">
+                    <button id="captureButton" class="px-8 py-3 bg-purple-600 text-white rounded-full text-lg hover:bg-purple-700 transition-all pulse-animation">
+                        <i class="fas fa-camera mr-2"></i> Scatta Foto
+                    </button>
+                </div>
+                
+                <div class="text-center text-sm text-gray-500 mt-2">
+                    <p>Assicurati di essere in un ambiente ben illuminato e mantieni il viso centrato</p>
+                </div>
+            </div>
+
+            <!-- Analysis Section (initially hidden) -->
+            <div id="analysisSection" class="hidden">
+                <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Analisi in corso...</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium text-gray-700" id="analysisStepText">Rilevamento del viso</span>
+                            <span class="text-sm font-medium text-gray-700" id="analysisPercentage">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div id="analysisProgress" class="bg-purple-600 h-2.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="text-gray-700 mb-2">Immagine Acquisita:</h4>
+                            <div class="bg-gray-100 rounded-lg p-1">
+                                <img id="capturedImage" class="w-full rounded-lg" alt="Immagine acquisita" />
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-gray-700 mb-2">Elaborazione AI:</h4>
+                            <div class="bg-gray-100 rounded-lg p-1 h-48 flex items-center justify-center" id="aiProcessingVisual">
+                                <div class="text-center">
+                                    <i class="fas fa-spinner fa-spin text-3xl text-purple-500 mb-2"></i>
+                                    <p class="text-sm text-gray-500">Il modello AI sta analizzando la tua pelle</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section (initially hidden) -->
+            <div id="resultsSection" class="hidden">
+                <div class="max-w-5xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">Risultati dell'Analisi</h3>
+                            <p class="text-gray-600 mb-6">Ecco un rapporto dettagliato sullo stato della tua pelle:</p>
+                            
+                            <div class="mb-8">
+                                <h4 class="text-lg font-semibold text-gray-700 mb-4">Punteggio Generale della Pelle</h4>
+                                <div class="flex items-center">
+                                    <div class="w-20 h-20 rounded-full border-8 flex items-center justify-center mr-6" id="scoreRing">
+                                        <span id="overallScore" class="text-2xl font-bold">0</span>
+                                    </div>
+                                    <div>
+                                        <h5 id="skinStatus" class="text-xl font-semibold mb-1">In analisi...</h5>
+                                        <p id="skinStatusDescription" class="text-gray-600">Il rapporto dettagliato verrà mostrato a breve.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                                <div>
+                                    <canvas id="skinRadarChart" width="400" height="400"></canvas>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-700 mb-4">Parametri Principali</h4>
+                                    <div class="space-y-4">
+                                        <div id="hydrationParameter" class="parameter-card p-4 bg-blue-50">
+                                            <div class="flex justify-between mb-1">
+                                                <span class="font-medium text-blue-800">Idratazione</span>
+                                                <span id="hydrationValue" class="font-medium text-blue-800">0%</span>
+                                            </div>
+                                            <div class="w-full bg-blue-200 rounded-full h-2.5">
+                                                <div id="hydrationBar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                            </div>
+                                            <p id="hydrationText" class="text-sm text-gray-600 mt-2">Analisi in corso...</p>
+                                        </div>
+                                        
+                                        <div id="rednessParameter" class="parameter-card p-4 bg-red-50">
+                                            <div class="flex justify-between mb-1">
+                                                <span class="font-medium text-red-800">Rossore</span>
+                                                <span id="rednessValue" class="font-medium text-red-800">0%</span>
+                                            </div>
+                                            <div class="w-full bg-red-200 rounded-full h-2.5">
+                                                <div id="rednessBar" class="bg-red-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                            </div>
+                                            <p id="rednessText" class="text-sm text-gray-600 mt-2">Analisi in corso...</p>
+                                        </div>
+                                        
+                                        <div id="spotsParameter" class="parameter-card p-4 bg-amber-50">
+                                            <div class="flex justify-between mb-1">
+                                                <span class="font-medium text-amber-800">Macchie</span>
+                                                <span id="spotsValue" class="font-medium text-amber-800">0%</span>
+                                            </div>
+                                            <div class="w-full bg-amber-200 rounded-full h-2.5">
+                                                <div id="spotsBar" class="bg-amber-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                            </div>
+                                            <p id="spotsText" class="text-sm text-gray-600 mt-2">Analisi in corso...</p>
+                                        </div>
+                                        
+                                        <div id="wrinklesParameter" class="parameter-card p-4 bg-purple-50">
+                                            <div class="flex justify-between mb-1">
+                                                <span class="font-medium text-purple-800">Rughe</span>
+                                                <span id="wrinklesValue" class="font-medium text-purple-800">0%</span>
+                                            </div>
+                                            <div class="w-full bg-purple-200 rounded-full h-2.5">
+                                                <div id="wrinklesBar" class="bg-purple-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                            </div>
+                                            <p id="wrinklesText" class="text-sm text-gray-600 mt-2">Analisi in corso...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t border-gray-200 pt-6">
+                                <h4 class="text-lg font-semibold text-gray-700 mb-4">Analisi Dettagliata</h4>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div id="detailedAnalysis1" class="bg-gray-50 p-4 rounded-lg">
+                                        <h5 class="font-medium text-gray-800 mb-2">Analisi della Texture</h5>
+                                        <p class="text-gray-600">Caricamento dell'analisi dettagliata...</p>
+                                    </div>
+                                    <div id="detailedAnalysis2" class="bg-gray-50 p-4 rounded-lg">
+                                        <h5 class="font-medium text-gray-800 mb-2">Elasticità e Tono</h5>
+                                        <p class="text-gray-600">Caricamento dell'analisi dettagliata...</p>
+                                    </div>
+                                    <div id="detailedAnalysis3" class="bg-gray-50 p-4 rounded-lg">
+                                        <h5 class="font-medium text-gray-800 mb-2">Pori e Impurità</h5>
+                                        <p class="text-gray-600">Caricamento dell'analisi dettagliata...</p>
+                                    </div>
+                                    <div id="detailedAnalysis4" class="bg-gray-50 p-4 rounded-lg">
+                                        <h5 class="font-medium text-gray-800 mb-2">Segni dell'Età</h5>
+                                        <p class="text-gray-600">Caricamento dell'analisi dettagliata...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Recommendations -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                        <div class="animated-bg text-white p-4">
+                            <h3 class="text-xl font-bold">Prodotti Consigliati</h3>
+                            <p>Basati sui risultati della tua analisi</p>
+                        </div>
+                        <div class="p-6">
+                            <div id="recommendationsContainer" class="grid md:grid-cols-3 gap-4">
+                                <div class="recommendation-card p-4 bg-white border rounded-lg shadow-sm">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                                            <i class="fas fa-tint"></i>
+                                        </div>
+                                        <h5 class="font-medium">Idratante</h5>
+                                    </div>
+                                    <p id="hydrationRecommendation" class="text-gray-600 text-sm">Caricamento consigli...</p>
+                                </div>
+                                
+                                <div class="recommendation-card p-4 bg-white border rounded-lg shadow-sm">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-500 mr-3">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </div>
+                                        <h5 class="font-medium">Lenitivo</h5>
+                                    </div>
+                                    <p id="rednessRecommendation" class="text-gray-600 text-sm">Caricamento consigli...</p>
+                                </div>
+                                
+                                <div class="recommendation-card p-4 bg-white border rounded-lg shadow-sm">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-500 mr-3">
+                                            <i class="fas fa-sun"></i>
+                                        </div>
+                                        <h5 class="font-medium">Antimacchia</h5>
+                                    </div>
+                                    <p id="spotsRecommendation" class="text-gray-600 text-sm">Caricamento consigli...</p>
+                                </div>
+                                
+                                <div class="recommendation-card p-4 bg-white border rounded-lg shadow-sm">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 mr-3">
+                                            <i class="fas fa-magic"></i>
+                                        </div>
+                                        <h5 class="font-medium">Antirughe</h5>
+                                    </div>
+                                    <p id="wrinklesRecommendation" class="text-gray-600 text-sm">Caricamento consigli...</p>
+                                </div>
+                                
+                                <div class="recommendation-card p-4 bg-white border rounded-lg shadow-sm">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                                            <i class="fas fa-leaf"></i>
+                                        </div>
+                                        <h5 class="font-medium">Purificante</h5>
+                                    </div>
+                                    <p id="purityRecommendation" class="text-gray-600 text-sm">Caricamento consigli...</p>
+                                </div>
+                                
+                                <div class="recommendation-card p-4 bg-white border rounded-lg shadow-sm">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-500 mr-3">
+                                            <i class="fas fa-moon"></i>
+                                        </div>
+                                        <h5 class="font-medium">Notte</h5>
+                                    </div>
+                                    <p id="nightRecommendation" class="text-gray-600 text-sm">Caricamento consigli...</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 text-center">
+                                <p class="text-sm text-gray-500 mb-3">Desideri una consulenza personalizzata più dettagliata?</p>
+                                <button id="moreRecommendationsButton" class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 transition-all">
+                                    Ricevi Consigli Avanzati
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Restart Button -->
+                    <div class="text-center mb-8">
+                        <button id="restartButton" class="px-8 py-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-all">
+                            <i class="fas fa-redo mr-2"></i> Ripeti Analisi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4">
+                <div class="grid md:grid-cols-4 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">Simphonie</h3>
+                        <p class="text-gray-400">La tua soluzione avanzata per l'analisi della pelle del viso basata su intelligenza artificiale.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Link Utili</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Come Funziona</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contatti</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Informazioni</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Termini di Servizio</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Informazioni sui Cookie</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Seguici</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                    <p class="text-gray-400">&copy; 2025 Clair Clinique. Tutti i diritti riservati.</p>
+                    <p class="text-sm text-gray-500 mt-2">Questa app utilizza modelli AI che operano localmente sul tuo dispositivo. Nessuna immagine viene caricata sui nostri server.</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Help Modal -->
+        <div id="helpModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+            <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full m-4 max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-gray-800">Guida all'utilizzo</h3>
+                        <button id="closeHelpButton" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-purple-700 mb-2">Come utilizzare Simphonie</h4>
+                            <p class="text-gray-600">Simphonie è una web app che analizza la pelle del viso utilizzando l'intelligenza artificiale direttamente nel tuo browser. Ecco come utilizzarla:</p>
+                        </div>
+                        
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h5 class="font-medium text-purple-800 mb-2">1. Scatta una foto</h5>
+                            <p class="text-gray-600">Posiziona il tuo viso al centro dell'inquadratura della fotocamera. Assicurati di essere in un ambiente ben illuminato e con luce naturale, se possibile.</p>
+                        </div>
+                        
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h5 class="font-medium text-purple-800 mb-2">2. Attendi l'analisi</h5>
+                            <p class="text-gray-600">L'intelligenza artificiale analizzerà la tua pelle, valutando parametri come idratazione, rossore, macchie e rughe. Questo processo richiederà solo pochi secondi.</p>
+                        </div>
+                        
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h5 class="font-medium text-purple-800 mb-2">3. Visualizza i risultati</h5>
+                            <p class="text-gray-600">Riceverai un rapporto dettagliato sullo stato della tua pelle e consigli personalizzati sui prodotti cosmetici più adatti alle tue esigenze.</p>
+                        </div>
+                        
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h5 class="font-medium text-gray-800 mb-2">Privacy e Sicurezza</h5>
+                            <p class="text-gray-600">Simphonie elabora tutte le immagini localmente sul tuo dispositivo. Nessuna foto viene caricata su server esterni, garantendo la massima privacy dei tuoi dati.</p>
+                        </div>
+                        
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h5 class="font-medium text-yellow-800 mb-2">Nota importante</h5>
+                            <p class="text-gray-600">Questa app fornisce solo indicazioni generali e non sostituisce la consulenza di un dermatologo. Per problemi cutanei specifici, consultare sempre un professionista.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Recommendations Modal -->
+    <div id="advancedRecommendationsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full m-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-bold text-gray-800">Consulenza Personalizzata</h3>
+                    <button class="closeModalButton text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div>
+                    <p class="text-gray-600 mb-4">Per ricevere una consulenza più approfondita e personalizzata basata sui risultati della tua analisi, compila il seguente modulo:</p>
+                    
+                    <form id="consultationForm" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-1" for="skinType">Tipo di pelle:</label>
+                            <select id="skinType" class="w-full p-2 border border-gray-300 rounded-md">
+                                <option value="">Seleziona...</option>
+                                <option value="dry">Secca</option>
+                                <option value="oily">Grassa</option>
+                                <option value="combination">Mista</option>
+                                <option value="normal">Normale</option>
+                                <option value="sensitive">Sensibile</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Preoccupazioni principali:</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="concern" value="hydration">
+                                    Idratazione
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="concern" value="redness">
+                                    Rossore
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="concern" value="spots">
+                                    Macchie
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="concern" value="wrinkles">
+                                    Rughe
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="concern" value="acne">
+                                    Acne
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" name="concern" value="pores">
+                                    Pori dilatati
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1" for="age">Età:</label>
+                            <select id="age" class="w-full p-2 border border-gray-300 rounded-md">
+                                <option value="">Seleziona...</option>
+                                <option value="under20">Meno di 20</option>
+                                <option value="20-30">20-30</option>
+                                <option value="30-40">30-40</option>
+                                <option value="40-50">40-50</option>
+                                <option value="over50">Più di 50</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1" for="additionalInfo">Informazioni aggiuntive:</label>
+                            <textarea id="additionalInfo" class="w-full p-2 border border-gray-300 rounded-md" rows="3" placeholder="Descrivi eventuali altre preoccupazioni o dettagli sulla tua pelle..."></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1" for="email">Email (per ricevere la consulenza):</label>
+                            <input type="email" id="email" class="w-full p-2 border border-gray-300 rounded-md" placeholder="esempio@email.com">
+                        </div>
+                        
+                        <div class="pt-2">
+                            <button type="submit" class="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md hover:from-purple-600 hover:to-pink-600 transition-all">
+                                Richiedi Consulenza
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variabili globali
+        let video, canvas, capturedImageCanvas, stream;
+        let faceDetectionModel;
+        let skinAnalysisResults = {};
+        let radarChart;
+        
+        // Dati simulati per dimostrare il funzionamento dell'app
+        const simulatedSkinData = {
+            hydration: {
+                value: 0,
+                text: "",
+                recommendation: ""
+            },
+            redness: {
+                value: 0,
+                text: "",
+                recommendation: ""
+            },
+            spots: {
+                value: 0,
+                text: "",
+                recommendation: ""
+            },
+            wrinkles: {
+                value: 0,
+                text: "",
+                recommendation: ""
+            }
+        };
+        
+        // Funzione per inizializzare l'app
+        async function initializeApp() {
+            updateLoadingStatus("Caricamento dei modelli di intelligenza artificiale...", 20);
+            
+            try {
+                // Caricamento del modello di rilevamento del viso
+                faceDetectionModel = await blazeface.load();
+                updateLoadingStatus("Modelli AI caricati con successo!", 60);
+                
+                // Inizializzazione della fotocamera
+                updateLoadingStatus("Inizializzazione della fotocamera...", 80);
+                await setupCamera();
+                
+                updateLoadingStatus("App pronta!", 100);
+                
+                // Nascondi la schermata di caricamento e mostra l'app
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').classList.add('hidden');
+                    document.getElementById('appContainer').classList.remove('hidden');
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Errore durante l\'inizializzazione:', error);
+                updateLoadingStatus("Errore durante l'inizializzazione: " + error.message, 100);
+                alert("Si è verificato un errore durante il caricamento dell'app. Per favore ricarica la pagina e assicurati di concedere i permessi della fotocamera.");
+            }
+        }
+        
+        // Funzione per aggiornare lo stato di caricamento
+        function updateLoadingStatus(message, percentage) {
+            document.getElementById('loadingStatus').textContent = message;
+            document.getElementById('loadingProgressBar').style.width = percentage + '%';
+        }
+        
+        // Funzione per impostare la fotocamera
+        async function setupCamera() {
+            video = document.getElementById('video');
+            const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+            
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+                
+                video.srcObject = stream;
+                
+                return new Promise((resolve) => {
+                    video.onloadedmetadata = () => {
+                        cameraPlaceholder.classList.add('hidden');
+                        
+                        // Configura il canvas per la sovrapposizione del rilevamento del viso
+                        const faceOverlay = document.getElementById('faceOverlay');
+                        faceOverlay.width = video.videoWidth;
+                        faceOverlay.height = video.videoHeight;
+                        
+                        // Avvia il rilevamento del viso in tempo reale
+                        detectFaceLoop();
+                        
+                        resolve();
+                    };
+                });
+            } catch (error) {
+                console.error('Errore accesso fotocamera:', error);
+                throw new Error('Impossibile accedere alla fotocamera. Assicurati di concedere i permessi necessari.');
+            }
+        }
+        
+        // Funzione per il rilevamento continuo del viso
+        async function detectFaceLoop() {
+            const faceOverlay = document.getElementById('faceOverlay');
+            const ctx = faceOverlay.getContext('2d');
+            
+            async function detect() {
+                if (video.readyState === 4) {
+                    // Cancella il canvas prima di disegnare
+                    ctx.clearRect(0, 0, faceOverlay.width, faceOverlay.height);
+                    
+                    // Esegui il rilevamento del viso
+                    const predictions = await faceDetectionModel.estimateFaces(video, false);
+                    
+                    if (predictions.length > 0) {
+                        // Disegna un contorno attorno al viso rilevato
+                        predictions.forEach(prediction => {
+                            const start = prediction.topLeft;
+                            const end = prediction.bottomRight;
+                            const size = [end[0] - start[0], end[1] - start[1]];
+                            
+                            // Disegna un rettangolo arrotondato attorno al viso
+                            ctx.strokeStyle = '#4CAF50';
+                            ctx.lineWidth = 3;
+                            ctx.beginPath();
+                            ctx.roundRect(start[0], start[1], size[0], size[1], 10);
+                            ctx.stroke();
+                            
+                            // Disegna punti di riferimento per gli occhi
+                            const landmarks = prediction.landmarks;
+                            landmarks.forEach((landmark, i) => {
+                                ctx.fillStyle = '#FF5722';
+                                ctx.beginPath();
+                                ctx.arc(landmark[0], landmark[1], 4, 0, 2 * Math.PI);
+                                ctx.fill();
+                            });
+                            
+                            // Aggiungi un testo per indicare che il viso è stato rilevato
+                            ctx.fillStyle = '#4CAF50';
+                            ctx.font = '16px Arial';
+                            ctx.fillText('Viso rilevato', start[0], start[1] - 10);
+                        });
+                    }
+                }
+                
+                // Continua il loop di rilevamento
+                requestAnimationFrame(detect);
+            }
+            
+            detect();
+        }
+        
+        // Funzione per acquisire l'immagine
+        function captureImage() {
+            // Crea un canvas per catturare l'immagine
+            capturedImageCanvas = document.createElement('canvas');
+            capturedImageCanvas.width = video.videoWidth;
+            capturedImageCanvas.height = video.videoHeight;
+            const ctx = capturedImageCanvas.getContext('2d');
+            
+            // Disegna il frame corrente del video sul canvas
+            ctx.drawImage(video, 0, 0, capturedImageCanvas.width, capturedImageCanvas.height);
+            
+            // Mostra l'immagine catturata
+            const capturedImage = document.getElementById('capturedImage');
+            capturedImage.src = capturedImageCanvas.toDataURL('image/png');
+            
+            // Nascondi la sezione fotocamera e mostra la sezione analisi
+            document.getElementById('cameraSection').classList.add('hidden');
+            document.getElementById('analysisSection').classList.remove('hidden');
+            
+            // Aggiorna gli indicatori di progresso
+            document.getElementById('step1').classList.remove('bg-purple-600', 'text-white');
+            document.getElementById('step1').classList.add('bg-green-600', 'text-white');
+            document.getElementById('step1to2').style.width = '100%';
+            document.getElementById('step2').classList.remove('bg-gray-300', 'text-gray-600');
+            document.getElementById('step2').classList.add('bg-purple-600', 'text-white');
+            
+            // Avvia l'analisi della pelle
+            analyzeSkin();
+        }
+        
+        // Funzione per analizzare la pelle (simulata)
+        async function analyzeSkin() {
+            // Simulazione del processo di analisi
+            const analysisSteps = [
+                { step: "Rilevamento del viso", percentage: 20 },
+                { step: "Analisi dell'idratazione", percentage: 40 },
+                { step: "Valutazione del rossore e macchie", percentage: 60 },
+                { step: "Analisi delle rughe e texture", percentage: 80 },
+                { step: "Elaborazione dei risultati", percentage: 100 }
+            ];
+            
+            // Processa ogni passo di analisi con un ritardo per simulare l'elaborazione
+            for (let i = 0; i < analysisSteps.length; i++) {
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        document.getElementById('analysisStepText').textContent = analysisSteps[i].step;
+                        document.getElementById('analysisPercentage').textContent = `${analysisSteps[i].percentage}%`;
+                        document.getElementById('analysisProgress').style.width = `${analysisSteps[i].percentage}%`;
+                        resolve();
+                    }, 1000);
+                });
+            }
+            
+            // Simulazione dei risultati dell'analisi
+            simulateSkinAnalysis();
+            
+            // Dopo l'analisi, mostra i risultati
+            setTimeout(() => {
+                // Nascondi la sezione analisi e mostra la sezione risultati
+                document.getElementById('analysisSection').classList.add('hidden');
+                document.getElementById('resultsSection').classList.remove('hidden');
+                
+                // Aggiorna gli indicatori di progresso
+                document.getElementById('step2to3').style.width = '100%';
+                document.getElementById('step2').classList.remove('bg-purple-600');
+                document.getElementById('step2').classList.add('bg-green-600');
+                document.getElementById('step3').classList.remove('bg-gray-300', 'text-gray-600');
+                document.getElementById('step3').classList.add('bg-purple-600', 'text-white');
+                
+                // Visualizza i risultati
+                displayResults();
+            }, 1000);
+        }
+        
+        // Funzione per simulare l'analisi della pelle
+        function simulateSkinAnalysis() {
+            // Genera valori casuali ma realistici per ogni parametro
+            simulatedSkinData.hydration.value = Math.floor(Math.random() * 51) + 30; // 30-80%
+            simulatedSkinData.redness.value = Math.floor(Math.random() * 61); // 0-60%
+            simulatedSkinData.spots.value = Math.floor(Math.random() * 71); // 0-70%
+            simulatedSkinData.wrinkles.value = Math.floor(Math.random() * 51) + 10; // 10-60%
+            
+            // Testi basati sui valori
+            if (simulatedSkinData.hydration.value < 40) {
+                simulatedSkinData.hydration.text = "La tua pelle mostra segni di disidratazione. È necessario aumentare l'apporto di idratazione.";
+                simulatedSkinData.hydration.recommendation = "Si consiglia una crema idratante intensiva con acido ialuronico e ceramidi. Applica mattina e sera dopo la detersione.";
+            } else if (simulatedSkinData.hydration.value < 60) {
+                simulatedSkinData.hydration.text = "La tua pelle ha un livello di idratazione moderato. Potrebbe beneficiare di una maggiore idratazione.";
+                simulatedSkinData.hydration.recommendation = "Utilizza un siero idratante seguito da una crema leggera. Considera l'uso di una maschera idratante 1-2 volte a settimana.";
+            } else {
+                simulatedSkinData.hydration.text = "La tua pelle ha un buon livello di idratazione. Continua con la tua routine attuale.";
+                simulatedSkinData.hydration.recommendation = "Mantieni la tua routine attuale. Un'idratante leggero e l'uso regolare di acqua termale possono aiutare a mantenere questo livello.";
+            }
+            
+            if (simulatedSkinData.redness.value < 20) {
+                simulatedSkinData.redness.text = "La tua pelle mostra un livello minimo di rossore. Non è necessario intervenire.";
+                simulatedSkinData.redness.recommendation = "Non sono necessari prodotti specifici anti-rossore, ma evita ingredienti irritanti come alcol e profumi intensi.";
+            } else if (simulatedSkinData.redness.value < 40) {
+                simulatedSkinData.redness.text = "La tua pelle mostra un rossore moderato. Potrebbe beneficiare di prodotti lenitivi.";
+                simulatedSkinData.redness.recommendation = "Prova una crema lenitiva con ingredienti come aloe vera, camomilla o centella asiatica. Evita l'esposizione prolungata al sole.";
+            } else {
+                simulatedSkinData.redness.text = "La tua pelle mostra un rossore significativo. Si consiglia l'uso di prodotti specifici anti-rossore.";
+                simulatedSkinData.redness.recommendation = "Utilizza prodotti specifici per pelli sensibili e con rossori. Cerca formule con niacinamide e estratti vegetali lenitivi. Consulta un dermatologo se il rossore persiste.";
+            }
+            
+            if (simulatedSkinData.spots.value < 25) {
+                simulatedSkinData.spots.text = "La tua pelle ha poche macchie visibili. Non è necessario un trattamento intensivo.";
+                simulatedSkinData.spots.recommendation = "Usa quotidianamente una protezione solare SPF 30+ per prevenire la formazione di nuove macchie.";
+            } else if (simulatedSkinData.spots.value < 50) {
+                simulatedSkinData.spots.text = "La tua pelle mostra alcune macchie. Si consiglia l'uso di prodotti schiarenti delicati.";
+                simulatedSkinData.spots.recommendation = "Incorpora un siero con vitamina C e niacinamide nella tua routine. Usa sempre una protezione solare alta.";
+            } else {
+                simulatedSkinData.spots.text = "La tua pelle mostra macchie evidenti. È consigliabile un trattamento specifico antimacchia.";
+                simulatedSkinData.spots.recommendation = "Utilizza un trattamento intensivo antimacchia con ingredienti come acido kojico o arbutina. Considera peeling chimici leggeri e protezione solare SPF 50+.";
+            }
+            
+            if (simulatedSkinData.wrinkles.value < 25) {
+                simulatedSkinData.wrinkles.text = "La tua pelle mostra minime linee sottili. È ottimo iniziare con la prevenzione.";
+                simulatedSkinData.wrinkles.recommendation = "Inizia con prodotti preventivi contenenti antiossidanti come vitamina E e retinolo in bassa concentrazione.";
+            } else if (simulatedSkinData.wrinkles.value < 45) {
+                simulatedSkinData.wrinkles.text = "La tua pelle mostra alcune rughe moderate. Si consiglia l'uso di prodotti anti-età.";
+                simulatedSkinData.wrinkles.recommendation = "Utilizza un siero al retinolo la sera e un prodotto con peptidi al mattino. Considera creme con acido ialuronico per migliorare la compattezza.";
+            } else {
+                simulatedSkinData.wrinkles.text = "La tua pelle mostra rughe più pronunciate. È consigliabile un trattamento intensivo anti-età.";
+                simulatedSkinData.wrinkles.recommendation = "Utilizza formule concentrate con retinolo ad alto dosaggio, peptidi e acidi della frutta. Considera trattamenti professionali come radiofrequenza o laser.";
+            }
+            
+            // Dettagli aggiuntivi per l'analisi dettagliata
+            skinAnalysisResults.texture = "L'analisi della texture mostra una leggera irregolarità superficiale con pori leggermente dilatati nella zona T. La pelle appare generalmente uniforme nelle zone periferiche del viso.";
+            skinAnalysisResults.elasticity = "L'elasticità della pelle è adeguata per la fascia di età, con un tono cutaneo nella media. Si nota una leggera perdita di tonicità nella zona del contorno occhi e delle guance.";
+            skinAnalysisResults.pores = "I pori sono leggermente dilatati nella zona T (fronte, naso e mento) con alcune impurità superficiali. Le zone laterali del viso mostrano pori di dimensioni normali.";
+            skinAnalysisResults.ageSigns = "Sono presenti alcune linee di espressione intorno agli occhi e alla fronte. Le linee nasolabiali sono leggermente marcate. Non si rilevano segni significativi di lassità cutanea.";
+            
+            // Consigli per prodotti aggiuntivi
+            skinAnalysisResults.purityRecommendation = "Un tonico purificante con acido salicilico (BHA) è consigliato per la zona T, seguito da un gel opacizzante non comedogenico. Utilizzare una maschera all'argilla una volta a settimana.";
+            skinAnalysisResults.nightRecommendation = "Una crema notte nutriente con peptidi e ceramidi favorirà la rigenerazione cutanea durante il sonno. Per un trattamento intensivo, applica un olio leggero concentrato prima della crema notte 2-3 volte a settimana.";
+        }
+        
+        // Funzione per visualizzare i risultati
+        function displayResults() {
+            // Imposta il punteggio generale della pelle (media ponderata)
+            const hydrationScore = 100 - simulatedSkinData.hydration.value;
+            const rednessScore = 100 - simulatedSkinData.redness.value;
+            const spotsScore = 100 - simulatedSkinData.spots.value;
+            const wrinklesScore = 100 - simulatedSkinData.wrinkles.value;
+            
+            const overallScore = Math.round((hydrationScore + rednessScore + spotsScore + wrinklesScore) / 4);
+            document.getElementById('overallScore').textContent = overallScore;
+            
+            // Aggiorna il colore dell'anello del punteggio
+            const scoreRing = document.getElementById('scoreRing');
+            if (overallScore < 40) {
+                scoreRing.style.borderColor = '#EF4444'; // rosso
+                document.getElementById('skinStatus').textContent = 'Necessita Attenzione';
+                document.getElementById('skinStatusDescription').textContent = 'La tua pelle mostra segni di stress e necessita di una cura specifica per migliorare il suo stato generale.';
+            } else if (overallScore < 70) {
+                scoreRing.style.borderColor = '#F59E0B'; // arancione
+                document.getElementById('skinStatus').textContent = 'Stato Medio';
+                document.getElementById('skinStatusDescription').textContent = 'La tua pelle è in uno stato accettabile ma potrebbe beneficiare di trattamenti mirati per migliorare alcuni parametri specifici.';
+            } else {
+                scoreRing.style.borderColor = '#10B981'; // verde
+                document.getElementById('skinStatus').textContent = 'Buono Stato';
+                document.getElementById('skinStatusDescription').textContent = 'La tua pelle è in buono stato generale. Continua con una routine di mantenimento ed eventuali trattamenti preventivi.';
+            }
+            
+            // Aggiorna i parametri principali
+            document.getElementById('hydrationValue').textContent = simulatedSkinData.hydration.value + '%';
+            document.getElementById('hydrationBar').style.width = simulatedSkinData.hydration.value + '%';
+            document.getElementById('hydrationText').textContent = simulatedSkinData.hydration.text;
+            
+            document.getElementById('rednessValue').textContent = simulatedSkinData.redness.value + '%';
+            document.getElementById('rednessBar').style.width = simulatedSkinData.redness.value + '%';
+            document.getElementById('rednessText').textContent = simulatedSkinData.redness.text;
+            
+            document.getElementById('spotsValue').textContent = simulatedSkinData.spots.value + '%';
+            document.getElementById('spotsBar').style.width = simulatedSkinData.spots.value + '%';
+            document.getElementById('spotsText').textContent = simulatedSkinData.spots.text;
+            
+            document.getElementById('wrinklesValue').textContent = simulatedSkinData.wrinkles.value + '%';
+            document.getElementById('wrinklesBar').style.width = simulatedSkinData.wrinkles.value + '%';
+            document.getElementById('wrinklesText').textContent = simulatedSkinData.wrinkles.text;
+            
+            // Aggiorna le raccomandazioni di prodotti
+            document.getElementById('hydrationRecommendation').textContent = simulatedSkinData.hydration.recommendation;
+            document.getElementById('rednessRecommendation').textContent = simulatedSkinData.redness.recommendation;
+            document.getElementById('spotsRecommendation').textContent = simulatedSkinData.spots.recommendation;
+            document.getElementById('wrinklesRecommendation').textContent = simulatedSkinData.wrinkles.recommendation;
+            document.getElementById('purityRecommendation').textContent = skinAnalysisResults.purityRecommendation;
+            document.getElementById('nightRecommendation').textContent = skinAnalysisResults.nightRecommendation;
+            
+            // Aggiorna l'analisi dettagliata
+            document.getElementById('detailedAnalysis1').innerHTML = `
+                <h5 class="font-medium text-gray-800 mb-2">Analisi della Texture</h5>
+                <p class="text-gray-600">${skinAnalysisResults.texture}</p>
+            `;
+            
+            document.getElementById('detailedAnalysis2').innerHTML = `
+                <h5 class="font-medium text-gray-800 mb-2">Elasticità e Tono</h5>
+                <p class="text-gray-600">${skinAnalysisResults.elasticity}</p>
+            `;
+            
+            document.getElementById('detailedAnalysis3').innerHTML = `
+                <h5 class="font-medium text-gray-800 mb-2">Pori e Impurità</h5>
+                <p class="text-gray-600">${skinAnalysisResults.pores}</p>
+            `;
+            
+            document.getElementById('detailedAnalysis4').innerHTML = `
+                <h5 class="font-medium text-gray-800 mb-2">Segni dell'Età</h5>
+                <p class="text-gray-600">${skinAnalysisResults.ageSigns}</p>
+            `;
+            
+            // Crea il grafico radar per i parametri della pelle
+            const ctx = document.getElementById('skinRadarChart').getContext('2d');
+            
+            // Distruggi il grafico esistente se presente
+            if (radarChart) {
+                radarChart.destroy();
+            }
+            
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Idratazione', 'Rossore (invertito)', 'Macchie (invertito)', 'Rughe (invertito)', 'Texture', 'Elasticità'],
+                    datasets: [{
+                        label: 'Stato della Pelle',
+                        data: [
+                            simulatedSkinData.hydration.value,
+                            100 - simulatedSkinData.redness.value,
+                            100 - simulatedSkinData.spots.value,
+                            100 - simulatedSkinData.wrinkles.value,
+                            Math.floor(Math.random() * 31) + 50, // Texture (simulata)
+                            Math.floor(Math.random() * 41) + 40  // Elasticità (simulata)
+                        ],
+                        fill: true,
+                        backgroundColor: 'rgba(151, 150, 240, 0.2)',
+                        borderColor: 'rgba(151, 150, 240, 1)',
+                        pointBackgroundColor: 'rgba(151, 150, 240, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(151, 150, 240, 1)'
+                    }]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            tension: 0.1
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Gestore eventi per il pulsante di acquisizione immagine
+        document.getElementById('captureButton').addEventListener('click', captureImage);
+        
+        // Gestore eventi per il pulsante di riavvio
+        document.getElementById('restartButton').addEventListener('click', () => {
+            // Resetta le sezioni
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('cameraSection').classList.remove('hidden');
+            
+            // Resetta gli indicatori di step
+            document.getElementById('step1').classList.remove('bg-green-600');
+            document.getElementById('step1').classList.add('bg-purple-600');
+            document.getElementById('step1to2').style.width = '0%';
+            document.getElementById('step2').classList.remove('bg-green-600', 'bg-purple-600', 'text-white');
+            document.getElementById('step2').classList.add('bg-gray-300', 'text-gray-600');
+            document.getElementById('step2to3').style.width = '0%';
+            document.getElementById('step3').classList.remove('bg-purple-600', 'text-white');
+            document.getElementById('step3').classList.add('bg-gray-300', 'text-gray-600');
+        });
+        
+        // Gestori eventi per il modal di aiuto
+        document.getElementById('helpButton').addEventListener('click', () => {
+            document.getElementById('helpModal').classList.remove('hidden');
+        });
+        
+        document.getElementById('closeHelpButton').addEventListener('click', () => {
+            document.getElementById('helpModal').classList.add('hidden');
+        });
+        
+        // Gestori eventi per il modal di consulenza avanzata
+        document.getElementById('moreRecommendationsButton').addEventListener('click', () => {
+            document.getElementById('advancedRecommendationsModal').classList.remove('hidden');
+        });
+        
+        document.querySelectorAll('.closeModalButton').forEach(button => {
+            button.addEventListener('click', () => {
+                document.getElementById('advancedRecommendationsModal').classList.add('hidden');
+            });
+        });
+        
+        // Gestore eventi per il form di consulenza
+        document.getElementById('consultationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('La tua richiesta di consulenza personalizzata è stata inviata! Riceverai presto una risposta all\'indirizzo email indicato.');
+            document.getElementById('advancedRecommendationsModal').classList.add('hidden');
+        });
+        
+        // Inizializza l'app al caricamento
+        window.addEventListener('load', initializeApp);
+    </script>
+</body>
+</html>
