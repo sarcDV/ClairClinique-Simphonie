@@ -405,9 +405,9 @@ with gr.Blocks(theme=dark_theme, title="Registrazione Utente - Studio Cosmetolog
         * **Revoca del consenso / Withdrawal of consent:** Revocare il consenso in qualsiasi momento, senza pregiudicare la liceità del trattamento basata sul consenso prestato prima della revoca. La revoca del consenso comporta l'interruzione del trattamento dei dati a partire dalla data di ricezione della richiesta. / Withdraw consent at any time, without affecting the lawfulness of processing based on consent before its withdrawal. The withdrawal of consent implies the interruption of data processing from the date of receipt of the request.
         * **Reclamo / Complaint** (Art. 77 GDPR): Proporre reclamo all'Autorità Garante per la Protezione dei Dati Personali (Piazza Venezia, 11 - 00187 Roma - protocollo@pec.gpdp.it). / Lodge a complaint with a supervisory authority (Garante per la Protezione dei Dati Personali, Piazza Venezia, 11 - 00187 Roma - protocollo@pec.gpdp.it).
         
-        Per esercitare i tuoi diritti, puoi contattare il Titolare del Trattamento all'indirizzo [Contatto Email/PEC o Responsabile della Protezione dei DPO) se presente].
+        Per esercitare i tuoi diritti, puoi contattare il Titolare del Trattamento all'indirizzo admin@pec.clairclinique.com.
         ---
-        To exercise your rights, you can contact the Data Controller at [Email/PEC Contact or DPO if present].
+        To exercise your rights, you can contact the Data Controller at admin@pec.clairclinique.com.
         
         **Natura del Conferimento / Nature of Provision:** Il conferimento dei dati è facoltativo. Tuttavia, il mancato conferimento del consenso o dei dati richiesti potrebbe impedire la partecipazione allo studio di ricerca.
         ---
