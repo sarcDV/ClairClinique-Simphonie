@@ -2,6 +2,7 @@ import http.server
 import socketserver
 import os
 import json
+import ast
 from datetime import datetime
 
 PORT = 8000
@@ -74,15 +75,14 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
                     'area': form_data.get('area'),
                     'products': None,
                     'usageFrequency': form_data.get('usageFrequency'),
-                    'skinType': form_data.get('skinType'),
+                    'skinType': None,
                     'skinConditions': None,
                     'skinDescription': form_data.get('skinDescription'),
                     'privacyConsent': form_data.get('privacyConsent'),
                     'timestamp': datetime.now().isoformat()
                 }
 
-                # Parse products and skinConditions as lists if possible
-                import ast
+                # Parse list fields (products, skinType, skinConditions)
                 def parse_list_field(val):
                     if val is None:
                         return []
@@ -98,7 +98,9 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
                             if isinstance(val, str):
                                 return [v.strip() for v in val.split(',') if v.strip()]
                             return [val]
+                
                 form_json['products'] = parse_list_field(form_data.get('products'))
+                form_json['skinType'] = parse_list_field(form_data.get('skinType'))
                 form_json['skinConditions'] = parse_list_field(form_data.get('skinConditions'))
 
                 with open(os.path.join(user_dir, 'form.json'), 'w', encoding='utf-8') as f:
@@ -156,3 +158,5 @@ if __name__ == "__main__":
             httpd.serve_forever()
         except KeyboardInterrupt:
             print("\nServer stopped.")
+
+# ngrok http --url=one-morally-panda.ngrok-free.app 8000

@@ -4,249 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studio Cosmetologico - Raccolta Dati</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f4f7f9;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background-color: #ffffff;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-        }
-
-        h1, h2 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .description {
-            color: #555;
-            font-size: 15px;
-            text-align: center;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .step {
-            margin-bottom: 30px;
-        }
-
-        .step-header {
-            font-size: 20px;
-            font-weight: bold;
-            color: #555;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #666;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        select, textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-        }
-
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 30px;
-            margin-bottom: 20px;
-        }
-        
-        .radio-option {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        
-        .radio-option input {
-            margin-right: 6px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .checkbox-option {
-            display: flex;
-            align-items: center;
-            width: calc(50% - 15px);
-        }
-        
-        .checkbox-option input {
-            margin-right: 6px;
-        }
-
-        /* Media Elements */
-        #videoElement, #photoCanvas, #videoPreview {
-            width: 100%;
-            max-height: 400px;
-            background-color: #000;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            object-fit: cover;
-            display: none;
-            margin: 10px auto;
-        }
-
-        .media-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .media-controls button {
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .media-controls button:hover:not(:disabled) {
-            background-color: #0056b3;
-        }
-        
-        .media-controls button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* Privacy Policy */
-        .privacy-policy {
-            max-height: 300px;
-            overflow-y: auto;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            font-size: 13px;
-            line-height: 1.5;
-            color: #495057;
-            margin-bottom: 20px;
-        }
-
-        .privacy-consent {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 25px;
-        }
-        
-        .privacy-consent input[type="checkbox"] {
-            margin-top: 8px;
-        }
-        
-        .privacy-consent label {
-            margin-left: 10px;
-            font-size: 14px;
-            color: #666;
-            line-height: 1.5;
-        }
-
-        .submit-section {
-            text-align: center;
-        }
-        
-        #submitFormButton {
-            padding: 12px 30px;
-            font-size: 18px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        
-        #submitFormButton.active {
-            opacity: 1;
-            cursor: pointer;
-        }
-        
-        #submitFormButton.active:hover {
-            background-color: #218838;
-        }
-
-        .success-message {
-            color: #28a745;
-            font-weight: bold;
-            margin-top: 20px;
-            display: none;
-        }
-        
-        .error-message {
-            color: #dc3545;
-            margin-top: 15px;
-            display: none;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .form-col {
-            flex: 1;
-        }
-        
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
-            
-            .checkbox-option {
-                width: 100%;
-            }
-        }
-
-        .vertical-group {
-            flex-direction: column;
-            gap: 10px;
-            align-items: flex-start;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
@@ -257,18 +15,15 @@
             <br><br>
             This questionnaire aims to collect useful information for cosmetological research on skin aging and facial skin problems in relation to environmental factors and lifestyles. The collected data will be processed anonymously and used exclusively for research purposes.
         </div>
-
         <form id="verificationForm">
             <div class="form-row">
                 <div class="form-col">
                     <div class="step form-section">
                         <div class="step-header">📝 Informazioni Personali / Personal Information</div>
-                        
                         <label for="birthYear">Anno di Nascita / Year of Birth</label>
                         <select id="birthYear" name="birthYear" required>
                             <!-- Years will be populated by JavaScript -->
                         </select>
-
                         <label>Sesso / Gender</label>
                         <div class="radio-group">
                             <label class="radio-option">
@@ -278,7 +33,6 @@
                                 <input type="radio" name="gender" value="Femminile / Female"> Femminile / Female
                             </label>
                         </div>
-
                         <label for="environmentExposure">Esposizione Ambientale / Environmental Exposure</label>
                         <select id="environmentExposure" name="environmentExposure" required>
                             <option value="Lavoro all'aperto / Outdoor work">Lavoro all'aperto / Outdoor work</option>
@@ -286,32 +40,26 @@
                             <option value="Clima estremo / Extreme climate">Clima estremo / Extreme climate</option>
                             <option value="Ambiente controllato / Controlled environment" selected>Ambiente controllato / Controlled environment</option>
                         </select>
-
                         <label>Zona / Area</label>
                         <div class="radio-group vertical-group">
                             <label class="radio-option">
                                 <input type="radio" name="area" value="Città / City" required> Città / City
                             </label>
-                            
                             <label class="radio-option">
                                 <input type="radio" name="area" value="Mare / Sea"> Mare / Sea
                             </label>
-                            
                             <label class="radio-option">
                                 <input type="radio" name="area" value="Montagna / Mountain"> Montagna / Mountain
                             </label>
-                            
                             <label class="radio-option">
                                 <input type="radio" name="area" value="Campagna / Countryside"> Campagna / Countryside
                             </label>
                         </div>
                     </div>
                 </div>
-                
                 <div class="form-col">
                     <div class="step form-section">
                         <div class="step-header">💆 Cura del Viso / Face Care</div>
-                        
                         <label>Prodotti Utilizzati / Products Used</label>
                         <div class="checkbox-group">
                             <label class="checkbox-option">
@@ -342,7 +90,6 @@
                                 <input type="checkbox" name="products" value="Nessuna crema utilizzata / No cream used"> Nessuna crema utilizzata / No cream used
                             </label>
                         </div>
-
                         <label for="usageFrequency">Frequenza d'Uso / Usage Frequency</label>
                         <select id="usageFrequency" name="usageFrequency" required>
                             <option value="Mai / Never">Mai / Never</option>
@@ -355,32 +102,47 @@
                     </div>
                 </div>
             </div>
-            
             <div class="step form-section">
                 <div class="step-header">🔍 Autovalutazione della Pelle / Skin Self-Assessment</div>
-                
-                <label>Come definiresti la tua pelle? / How would you define your skin?</label>
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="skinType" value="Pelle secca / Dry skin" required> Pelle secca / Dry skin
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="skinType" value="Pelle grassa / Oily skin"> Pelle grassa / Oily skin
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="skinType" value="Pelle mista / Combination skin"> Pelle mista / Combination skin
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="skinType" value="Pelle normale / Normal skin"> Pelle normale / Normal skin
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="skinType" value="Pelle sensibile / Sensitive skin"> Pelle sensibile / Sensitive skin
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="skinType" value="Pelle disidratata / Dehydrated skin"> Pelle disidratata / Dehydrated skin
-                    </label>
+                <label>Come definiresti la tua pelle? (seleziona tutte quelle applicabili) / How would you define your skin? (select all that apply)</label>
+                <div class="skin-type-container">
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle secca / Dry skin">
+                            <span class="skin-type-text">Pelle secca / Dry skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle grassa / Oily skin">
+                            <span class="skin-type-text">Pelle grassa / Oily skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle mista / Combination skin">
+                            <span class="skin-type-text">Pelle mista / Combination skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle normale / Normal skin">
+                            <span class="skin-type-text">Pelle normale / Normal skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle sensibile / Sensitive skin">
+                            <span class="skin-type-text">Pelle sensibile / Sensitive skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle disidratata / Dehydrated skin">
+                            <span class="skin-type-text">Pelle disidratata / Dehydrated skin</span>
+                        </label>
+                    </div>
                 </div>
-                
                 <label>Condizioni cutanee presenti (seleziona tutte quelle applicabili) / Existing skin conditions (select all that apply)</label>
                 <div class="checkbox-group">
                     <label class="checkbox-option">
@@ -423,28 +185,21 @@
                         <input type="checkbox" name="skinConditions" value="Nessuna condizione particolare / No particular condition"> Nessuna condizione particolare / No particular condition
                     </label>
                 </div>
-                
                 <label for="skinDescription">Breve descrizione della tua pelle (facoltativo) / Brief description of your skin (optional)</label>
                 <textarea id="skinDescription" name="skinDescription" placeholder="Es: La mia pelle è sensibile al freddo e tende a seccarsi d'inverno. / E.g.: My skin is sensitive to cold and tends to dry out in winter."></textarea>
             </div>
-
             <!-- Step 2: Selfie -->
             <div class="step selfie-section">
                 <div class="step-header">📸 Foto del Viso (Obbligatoria) / Face Photo (Mandatory)</div>
                 <p>Posiziona il viso chiaramente nel riquadro della fotocamera. / Position your face clearly in the camera frame.</p>
-                <div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; font-size: 14px; color: #444;">
-                    <strong>Istruzioni per la Foto:</strong>
-                    <ul style="margin-top: 8px; margin-bottom: 8px;">
-                        <li>Buona illuminazione: Assicurati che il viso sia ben illuminato e senza ombre.</li>
-                        <li>Metti a fuoco il viso: La foto deve essere nitida e focalizzata sul viso.</li>
-                        <li>Niente che copra il viso: Non indossare occhiali, cappelli, maschere o altri accessori che possano coprire il viso o la pelle.</li>
-                    </ul>
-                    <strong>Photo Instructions:</strong>
-                    <ul style="margin-top: 8px;">
-                        <li>Good lighting: Make sure your face is well-lit and without shadows.</li>
-                        <li>Focus on your face: The photo must be clear and focused on your face.</li>
-                        <li>Nothing covering your face: Do not wear glasses, hats, masks, or other accessories that might cover your face or skin.</li>
-                    </ul>
+                 <!-- Istruzioni Selfie -->
+                 <div id="selfieInstructions" class="instructions"></div>
+                <!-- Example Selfie Image -->
+                <div class="example-image">
+                    <img src="assets/esempio_foto.png" alt="Esempio di selfie">
+                    <div>
+                        Esempio di selfie corretto / Example of a correct selfie
+                    </div>
                 </div>
                 <video id="selfieVideoElement"></video>
                 <canvas id="photoCanvas"></canvas>
@@ -454,29 +209,12 @@
                     <button type="button" id="retakeButton" style="display: none;">Ripeti / Retake</button>
                 </div>
             </div>
-
             <!-- Step 3: Video Recording -->
             <div class="step video-section">
                 <div class="step-header">🎥 Video del Viso (Obbligatorio) / Face Video (Mandatory)</div>
                 <p>Registra un breve video del tuo viso, guardando dritto nella fotocamera. / Record a short video of your face, looking straight into the camera.</p>
-                <div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; font-size: 14px; color: #444;">
-                    <strong>Istruzioni per il Video (Durata Massima: 10 secondi):</strong>
-                    <ul style="margin-top: 8px; margin-bottom: 8px;">
-                        <li>Buona illuminazione: Assicurati che il viso sia ben illuminato e senza ombre.</li>
-                        <li>Messa a fuoco: Il viso deve essere a fuoco per tutta la durata del video.</li>
-                        <li>Espressione neutra: Inizia con un'espressione facciale neutra.</li>
-                        <li>Movimento: Muovi lentamente il viso da destra a sinistra e poi dall'alto verso il basso (o viceversa) per mostrare diverse angolazioni.</li>
-                        <li>Niente che copra il viso: Non indossare occhiali, cappelli o altri accessori che possano coprire il viso.</li>
-                    </ul>
-                    <strong>Video Instructions (Maximum Duration: 10 seconds):</strong>
-                    <ul style="margin-top: 8px;">
-                        <li>Good lighting: Make sure your face is well-lit and without shadows.</li>
-                        <li>Focus: Your face should remain in focus throughout the video.</li>
-                        <li>Neutral expression: Start with a neutral facial expression.</li>
-                        <li>Movement: Slowly move your face from right to left, then top to bottom (or vice versa) to show different angles.</li>
-                        <li>Nothing covering your face: Do not wear glasses, hats, or other accessories that might cover your face.</li>
-                    </ul>
-                </div>
+                <!-- Istruzioni Video -->
+                <div id="videoInstructions" class="instructions"></div>
                 <video id="videoElement"></video>
                 <video id="videoPreview" controls></video>
                 <div class="media-controls">
@@ -485,77 +223,12 @@
                     <button type="button" id="reRecordButton" style="display: none;">Riregistra / Re-record</button>
                 </div>
             </div>
-
             <!-- Step 4: Privacy -->
             <div class="step privacy-section">
                 <div class="step-header">🔒 Informativa sulla Privacy (Art. 13 GDPR)</div>
-                <div class="privacy-policy">
-                    <strong>Titolare del Trattamento / Data Controller:</strong> Clair Clinique S.r.l., Strada Statale 17 Loc. Boschetto di Pile, 67100 L'Aquila AQ, admin@pec.clairclinique.com<br><br>
-
-                    <strong>Finalità del Trattamento / Purpose of Processing:</strong> I dati personali e la <strong>foto e il video</strong> che ci fornirai saranno raccolti ed elaborati esclusivamente per le seguenti finalità:<br>
-                    • Ricerca scientifica sull'invecchiamento cutaneo e problematiche della pelle del viso, fattori ambientali e stili di vita.<br>
-                    • Analisi statistiche e sviluppo di modelli predittivi in ambito cosmetologico.<br>
-                    • Pubblicazioni scientifiche (solo dati aggregati e anonimi).<br>
-                    ---<br>
-                    Your personal data and <strong>photo and video</strong> will be collected and processed exclusively for the following purposes:<br>
-                    • Scientific research on skin aging and facial skin problems, environmental factors, and lifestyles.<br>
-                    • Statistical analysis and development of predictive models in cosmetology.<br>
-                    • Scientific publications (aggregated and anonymous data only).<br><br>
-
-                    <strong>Base Giuridica del Trattamento / Legal Basis for Processing:</strong> Il trattamento dei tuoi dati si basa sul tuo <strong>consenso esplicito</strong> (Art. 6, par. 1, lett. a) e Art. 9, par. 2, lett. a) del GDPR per le categorie particolari di dati, come le immagini/video).<br>
-                    ---<br>
-                    The processing of your data is based on your <strong>explicit consent</strong> (Art. 6, par. 1, lit. a) and Art. 9, par. 2, lit. a) of the GDPR for special categories of data, such as images/videos).<br><br>
-
-                    <strong>Categorie di Dati Raccolti / Categories of Data Collected:</strong><br>
-                    • <strong>Dati anagrafici (non identificativi) / Anagraphic data (non-identifying):</strong> Anno di nascita / Year of birth, Sesso / Gender.<br>
-                    • <strong>Dati geografici / Geographic data:</strong> Zona (città, mare, montagna, campagna) / Area (city, sea, mountain, countryside).<br>
-                    • <strong>Dati relativi allo stile di vita / Lifestyle data:</strong> Esposizione ambientale / Environmental exposure.<br>
-                    • <strong>Dati relativi alla salute (autovalutazione) / Health-related data (self-assessment):</strong> Tipo di pelle / Skin type, Condizioni cutanee / Skin conditions, Breve descrizione della pelle / Brief skin description.<br>
-                    • <strong>Dati relativi alle abitudini di cura / Care habits data:</strong> Prodotti utilizzati / Products used, Frequenza d'uso / Usage frequency.<br>
-                    • <strong>Dati biometrici (foto e video)</strong>: Una fotografia E un video del viso. / <strong>Biometric data (photo and video)</strong>: A photograph AND a video of the face.<br><br>
-
-                    <strong>Modalità del Trattamento / Processing Methods:</strong> I tuoi dati saranno trattati in formato elettronico e cartaceo, con logiche strettamente correlate alle finalità indicate e in modo da garantirne la sicurezza e la riservatezza, nel rispetto dei principi di cui all'Art. 5 del GDPR. Verranno adottate tutte le misure tecniche e organizzative necessarie a ridurre al minimo il rischio di accesso non autorizzato, diffusione, perdita o distruzione dei dati.<br>
-                    ---<br>
-                    Your data will be processed in electronic and paper format, with logic strictly related to the indicated purposes and in a way that ensures their security and confidentiality, in compliance with the principles of Art. 5 of the GDPR. All necessary technical and organizational measures will be adopted to minimize the risk of unauthorized access, dissemination, loss, or destruction of data.<br><br>
-
-                    <strong>Anonimizzazione e Pseudonimizzazione / Anonymization and Pseudonymization:</strong> Per la ricerca, i dati saranno, ove possibile e appropriato, <strong>anonimizzati</strong> o <strong>pseudonimizzati</strong> in modo da non consentire la tua identificazione diretta. La tua immagine e video saranno utilizzati solo per le finalità di ricerca specificate e non saranno associati al tuo nome o ad altri dati identificativi nelle pubblicazioni o nelle presentazioni.<br>
-                    ---<br>
-                    For research purposes, data will be, where possible and appropriate, <strong>anonymized</strong> or <strong>pseudonymized</strong> so as not to allow your direct identification. Your image and video will only be used for the specified research purposes and will not be associated with your name or other identifying data in publications or presentations.<br><br>
-
-                    <strong>Conservazione dei Dati / Data Retention:</strong> I dati saranno conservati per il tempo strettamente necessario al perseguimento delle finalità di ricerca, e comunque non oltre <strong>10 anni</strong> dalla data di raccolta, salvo ulteriori obblighi di legge o esigenze di ricerca che richiedano un periodo più lungo, sempre nel rispetto delle normative vigenti.<br>
-                    ---<br>
-                    Data will be stored for the time strictly necessary to pursue research purposes, and in any case not beyond <strong>10 years</strong> from the date of collection, unless further legal obligations or research needs require a longer period, always in compliance with current regulations.<br><br>
-
-                    <strong>Destinatari dei Dati / Data Recipients:</strong> I tuoi dati non saranno diffusi. Potranno essere condivisi con il personale autorizzato di Clair Clinique S.r.l. coinvolto nella ricerca e con soggetti terzi (es. università, istituti di ricerca) solo se strettamente necessario per le finalità di ricerca e previo accordi di riservatezza e conformità al GDPR.<br>
-                    ---<br>
-                    Your data will be shared only with authorized personnel of the Clair Clinique involved in the research and with third parties (e.g., universities, research institutes) only if strictly necessary for research purposes and after confidentiality agreements and GDPR compliance.<br><br>
-
-                    <strong>Diritti dell'Interessato / Data Subject Rights:</strong> In qualità di interessato, hai il diritto di:<br>
-                    • <strong>Accesso / Access</strong> (Art. 15 GDPR): Ottenere la conferma che sia o meno in corso un trattamento di dati personali che ti riguardano e, in tal caso, ottenerne l'accesso. / Obtain confirmation as to whether or not personal data concerning you are being processed, and, where that is the case, access to the personal data.<br>
-                    • <strong>Rettifica / Rectification</strong> (Art. 16 GDPR): Ottenere la rettifica dei dati personali inesatti che ti riguardano. / Obtain the rectification of inaccurate personal data concerning you.<br>
-                    • <strong>Cancellazione / Erasure</strong> (Art. 17 GDPR - "diritto all'oblio" / "right to be forgotten"): Ottenere la cancellazione dei dati personali che ti riguardano, se sussistono i motivi previsti dalla legge. / Obtain the erasure of personal data concerning you without undue delay if the grounds provided by law exist.<br>
-                    • <strong>Limitazione di trattamento / Restriction of processing</strong> (Art. 18 GDPR): Ottenere la limitazione del trattamento. / Obtain restriction of processing.<br>
-                    • <strong>Portabilità dei dati / Data portability</strong> (Art. 20 GDPR): Ricevere in un formato strutturato, di uso comune e leggibile da dispositivo automatico i dati personali che ti riguardano. / Receive the personal data concerning you in a structured, commonly used and machine-readable format.<br>
-                    • <strong>Opposizione / Objection</strong> (Art. 21 GDPR): Opporti al trattamento dei dati personali che ti riguardano. / Object to the processing of personal data concerning you.<br>
-                    • <strong>Revoca del consenso / Withdrawal of consent</strong> (Art. 7 GDPR): Revocare il consenso in qualsiasi momento, senza pregiudicare la liceità del trattamento basata sul consenso prestato prima della revoca. / Withdraw consent at any time, without affecting the lawfulness of processing based on consent before its withdrawal.<br><br>
-
-                    <strong>Esercizio dei Diritti / Exercise of Rights:</strong> Per esercitare i tuoi diritti, puoi contattare il Titolare del Trattamento all'indirizzo email: admin@pec.clairclinique.com o scrivere all'indirizzo: Clair Clinique S.r.l., Strada Statale 17 Loc. Boschetto di Pile, 67100 L'Aquila AQ.<br>
-                    ---<br>
-                    To exercise your rights, you can contact the Data Controller at the email address: admin@pec.clairclinique.com or write to the address: Clair Clinique S.r.l., Strada Statale 17 Loc. Boschetto di Pile, 67100 L'Aquila AQ.<br><br>
-
-                    <strong>Reclamo all'Autorità di Controllo / Complaint to Supervisory Authority:</strong> Hai il diritto di proporre reclamo all'Autorità Garante per la Protezione dei Dati Personali (www.gpdp.it) se ritieni che il trattamento dei tuoi dati personali avvenga in violazione del GDPR.<br>
-                    ---<br>
-                    You have the right to lodge a complaint with the Italian Data Protection Authority (www.gpdp.it) if you believe that the processing of your personal data is in violation of the GDPR.<br><br>
-
-                    <strong>Trasferimenti Internazionali / International Transfers:</strong> I tuoi dati non saranno trasferiti al di fuori dell'Unione Europea, salvo che ciò non sia strettamente necessario per le finalità di ricerca e previo adeguate garanzie di protezione conformi al GDPR.<br>
-                    ---<br>
-                    Your data will not be transferred outside the European Union, unless this is strictly necessary for research purposes and with adequate protection guarantees in accordance with the GDPR.<br><br>
-
-                    <strong>Aggiornamenti / Updates:</strong> La presente informativa potrà essere aggiornata periodicamente. Ti invitiamo a consultarla regolarmente per essere sempre informato su come trattiamo i tuoi dati personali.<br>
-                    ---<br>
-                    This privacy policy may be updated periodically. We invite you to consult it regularly to stay informed about how we process your personal data.
+                <div id="privacyPolicyContent" class="privacy-policy">
+                    <!-- Contenuto Privacy Policy -->
                 </div>
-
                 <div class="privacy-consent">
                     <input type="checkbox" id="privacyConsent" name="privacyConsent" required>
                     <label for="privacyConsent">
@@ -563,7 +236,6 @@
                     </label>
                 </div>
             </div>
-
             <div class="submit-section">
                 <button type="submit" id="submitFormButton" disabled>Invia Dati / Submit Data</button>
                 <div class="success-message" id="successMessage"></div>
@@ -571,313 +243,11 @@
             </div>
         </form>
     </div>
-
-    <script>
-        // Elements
-        const selfieVideoElement = document.getElementById('selfieVideoElement');
-        const videoElement = document.getElementById('videoElement');
-        const photoCanvas = document.getElementById('photoCanvas');
-        const videoPreview = document.getElementById('videoPreview');
-        const startCameraButton = document.getElementById('startCameraButton');
-        const captureButton = document.getElementById('captureButton');
-        const retakeButton = document.getElementById('retakeButton');
-        const recordButton = document.getElementById('recordButton');
-        const stopButton = document.getElementById('stopButton');
-        const reRecordButton = document.getElementById('reRecordButton');
-        const submitFormButton = document.getElementById('submitFormButton');
-        const privacyConsent = document.getElementById('privacyConsent');
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
-        const form = document.getElementById('verificationForm');
-
-        const canvasContext = photoCanvas.getContext('2d');
-        let currentStream = null;
-        let mediaRecorder = null;
-        let recordedChunks = [];
-        let photoData = null;
-        let videoData = null;
-
-        let selfieTaken = false;
-        let videoRecorded = false;
-
-        // Generate random ID
-        function generateRandomId(length = 8) {
-            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-
-        function getTimestamp() {
-            const d = new Date();
-            return d.getFullYear() +
-                String(d.getMonth()+1).padStart(2,'0') +
-                String(d.getDate()).padStart(2,'0') +
-                String(d.getHours()).padStart(2,'0') +
-                String(d.getMinutes()).padStart(2,'0') +
-                String(d.getSeconds()).padStart(2,'0');
-        }
-
-        // Populate birth year
-        window.addEventListener('DOMContentLoaded', () => {
-            const birthYearSelect = document.getElementById('birthYear');
-            for (let year = 1940; year <= 2010; year++) {
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                birthYearSelect.appendChild(option);
-            }
-            // Set default value to 1980
-            birthYearSelect.value = "1980";
-            
-            startCameraButton.disabled = false;
-        });
-
-        // --- Step 2: Selfie ---
-        startCameraButton.addEventListener('click', async () => {
-            try {
-                if (currentStream) currentStream.getTracks().forEach(t => t.stop());
-                currentStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                selfieVideoElement.srcObject = currentStream;
-                selfieVideoElement.style.display = 'block';
-                selfieVideoElement.play();
-                photoCanvas.style.display = 'none';
-                captureButton.disabled = false;
-                startCameraButton.disabled = true;
-                errorMessage.style.display = 'none';
-            } catch (err) {
-                console.error('Camera error:', err);
-                showError('Errore: permesso fotocamera negato.');
-            }
-        });
-
-        captureButton.addEventListener('click', () => {
-            if (!currentStream) return;
-
-            photoCanvas.width = selfieVideoElement.videoWidth;
-            photoCanvas.height = selfieVideoElement.videoHeight;
-            canvasContext.drawImage(selfieVideoElement, 0, 0, photoCanvas.width, photoCanvas.height);
-            photoData = photoCanvas.toDataURL('image/png');
-
-            selfieVideoElement.style.display = 'none';
-            photoCanvas.style.display = 'block';
-            captureButton.style.display = 'none';
-            retakeButton.style.display = 'inline-block';
-
-            currentStream.getTracks().forEach(t => t.stop());
-            currentStream = null;
-
-            selfieTaken = true;
-            recordButton.disabled = false;
-            checkFormStatus();
-        });
-
-        retakeButton.addEventListener('click', () => {
-            photoCanvas.style.display = 'none';
-            captureButton.style.display = 'inline-block';
-            retakeButton.style.display = 'none';
-            startCameraButton.disabled = false;
-            photoData = null;
-            selfieTaken = false;
-            checkFormStatus();
-        });
-
-        // --- Step 3: Video Recording ---
-        recordButton.addEventListener('click', async () => {
-            try {
-                if (currentStream) currentStream.getTracks().forEach(t => t.stop());
-                currentStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                videoElement.srcObject = currentStream;
-                videoElement.style.display = 'block';
-                videoElement.play(); // <-- Add this line
-                videoPreview.style.display = 'none';
-                // photoCanvas.style.display = 'none'; 
-
-                recordButton.disabled = true;
-                stopButton.disabled = false;
-                reRecordButton.style.display = 'none';
-
-                recordedChunks = [];
-                mediaRecorder = new MediaRecorder(currentStream, { mimeType: 'video/webm' });
-
-                mediaRecorder.ondataavailable = e => {
-                    if (e.data.size > 0) {
-                        recordedChunks.push(e.data);
-                    }
-                };
-
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                    videoData = blob;
-                    videoPreview.src = URL.createObjectURL(blob);
-                    videoPreview.style.display = 'block';
-                    videoElement.style.display = 'none';
-                    // photoCanvas.style.display = 'none';
-
-                    currentStream.getTracks().forEach(t => t.stop());
-                    currentStream = null;
-
-                    videoRecorded = true;
-                    checkFormStatus();
-                };
-
-                mediaRecorder.start();
-
-                // Auto-stop after 10s
-                setTimeout(() => {
-                    if (mediaRecorder && mediaRecorder.state === 'recording') {
-                        mediaRecorder.stop();
-                        stopButton.disabled = true;
-                        reRecordButton.style.display = 'inline-block';
-                    }
-                }, 10000); // 10 seconds max
-            } catch (err) {
-                console.error('Video error:', err);
-                showError('Errore: permesso videocamera negato.');
-            }
-        });
-
-        stopButton.addEventListener('click', () => {
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                mediaRecorder.stop();
-                stopButton.disabled = true;
-                reRecordButton.style.display = 'inline-block';
-            }
-        });
-
-        reRecordButton.addEventListener('click', () => {
-            videoPreview.style.display = 'none';
-            reRecordButton.style.display = 'none';
-            recordButton.disabled = false;
-            videoData = null;
-            videoRecorded = false;
-            checkFormStatus();
-        });
-
-        // --- Form Validation and Submission ---
-        privacyConsent.addEventListener('change', checkFormStatus);
-
-        function checkFormStatus() {
-            // Enable submit if selfie, video, and privacy consent are present
-            if (selfieTaken && videoRecorded && privacyConsent.checked) {
-                submitFormButton.disabled = false;
-                submitFormButton.classList.add('active');
-            } else {
-                submitFormButton.disabled = true;
-                submitFormButton.classList.remove('active');
-            }
-        }
-
-        function showError(msg) {
-            errorMessage.textContent = msg;
-            errorMessage.style.display = 'block';
-            successMessage.style.display = 'none';
-        }
-
-        function showSuccess(msg) {
-            successMessage.textContent = msg;
-            successMessage.style.display = 'block';
-            errorMessage.style.display = 'none';
-        }
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-
-            // Custom validation for all required fields except the optional textarea
-            const requiredSelectors = [
-                '#birthYear',
-                'input[name="gender"]:checked',
-                '#environmentExposure',
-                'input[name="area"]:checked',
-                'input[name="products"]:checked',
-                '#usageFrequency',
-                'input[name="skinType"]:checked',
-                'input[name="skinConditions"]:checked'
-            ];
-            let allValid = true;
-            for (const selector of requiredSelectors) {
-                if (!form.querySelector(selector)) {
-                    allValid = false;
-                    break;
-                }
-            }
-            if (!allValid) {
-                showError('Per favore, compila tutti i campi obbligatori. / Please fill in all required fields.');
-                return;
-            }
-
-            if (!selfieTaken) {
-                showError('Devi scattare un selfie.');
-                return;
-            }
-            if (!videoRecorded) {
-                showError('Devi registrare un video.');
-                return;
-            }
-            if (!privacyConsent.checked) {
-                showError('Devi accettare l\'informativa sulla privacy.');
-                return;
-            }
-
-            // Gather form data
-            const formData = new FormData(form);
-            // Get all checked checkboxes for products and skinConditions
-            formData.set('products', Array.from(form.querySelectorAll('input[name="products"]:checked')).map(cb => cb.value));
-            formData.set('skinConditions', Array.from(form.querySelectorAll('input[name="skinConditions"]:checked')).map(cb => cb.value));
-
-            // Add selfie and video
-            formData.append('selfie', dataURLtoBlob(photoData), 'selfie.png');
-            formData.append('video', videoData, 'video.webm');
-
-            // Generate user folder name
-            const userId = generateRandomId() + '_' + getTimestamp();
-            formData.append('userId', userId);
-
-            submitFormButton.disabled = true;
-            submitFormButton.textContent = 'Invio in corso... / Submitting...';
-
-            try {
-                const response = await fetch('/submit', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    showSuccess('Dati inviati con successo! / Data submitted successfully!');
-                    form.reset();
-                    photoCanvas.style.display = 'none';
-                    videoPreview.style.display = 'none';
-                    selfieTaken = false;
-                    videoRecorded = false;
-                    photoData = null;
-                    videoData = null;
-                    checkFormStatus();
-                } else {
-                    const errText = await response.text();
-                    showError('Errore durante l\'invio: ' + errText);
-                }
-            } catch (err) {
-                showError('Errore di rete: ' + err.message);
-            } finally {
-                submitFormButton.disabled = false;
-                submitFormButton.textContent = 'Invia Dati / Submit Data';
-            }
-        });
-
-        // Helper: Convert dataURL to Blob
-        function dataURLtoBlob(dataurl) {
-            if (!dataurl) return null;
-            const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-            for (let i = 0; i < n; i++) {
-                u8arr[i] = bstr.charCodeAt(i);
-            }
-            return new Blob([u8arr], { type: mime });
-        }
-    </script>
+    <!-- Caricamento dei file JavaScript -->
+    <script src="js/utils.js"></script>
+    <script src="js/selfieHandler.js"></script>
+    <script src="js/videoHandler.js"></script>
+    <script src="js/formHandler.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
