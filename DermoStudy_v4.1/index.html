@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Cosmetologico - Raccolta Dati</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Studio Cosmetologico - Raccolta Dati</h1>
+        <h2>Cosmetological Study - Data Collection</h2>
+        <div class="description">
+            Questo questionario ha lo scopo di raccogliere informazioni utili per la ricerca cosmetologica sull'invecchiamento cutaneo e problematiche della pelle del viso in relazione a fattori ambientali e stili di vita. I dati raccolti saranno trattati in forma anonima e utilizzati esclusivamente per scopi di ricerca.
+            <br><br>
+            This questionnaire aims to collect useful information for cosmetological research on skin aging and facial skin problems in relation to environmental factors and lifestyles. The collected data will be processed anonymously and used exclusively for research purposes.
+        </div>
+        <form id="verificationForm">
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="step form-section">
+                        <div class="step-header">📝 Informazioni Personali / Personal Information</div>
+                        <label for="birthYear">Anno di Nascita / Year of Birth</label>
+                        <select id="birthYear" name="birthYear" required>
+                            <!-- Years will be populated by JavaScript -->
+                        </select>
+                        <label>Sesso / Gender</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="Maschile / Male" required> Maschile / Male
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="Femminile / Female"> Femminile / Female
+                            </label>
+                        </div>
+                        <label for="environmentExposure">Esposizione Ambientale / Environmental Exposure</label>
+                        <select id="environmentExposure" name="environmentExposure" required>
+                            <option value="Lavoro all'aperto / Outdoor work">Lavoro all'aperto / Outdoor work</option>
+                            <option value="Esposizione solare frequente / Frequent sun exposure">Esposizione solare frequente / Frequent sun exposure</option>
+                            <option value="Clima estremo / Extreme climate">Clima estremo / Extreme climate</option>
+                            <option value="Ambiente controllato / Controlled environment" selected>Ambiente controllato / Controlled environment</option>
+                        </select>
+                        <label>Zona / Area</label>
+                        <div class="radio-group vertical-group">
+                            <label class="radio-option">
+                                <input type="radio" name="area" value="Città / City" required> Città / City
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="area" value="Mare / Sea"> Mare / Sea
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="area" value="Montagna / Mountain"> Montagna / Mountain
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="area" value="Campagna / Countryside"> Campagna / Countryside
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="step form-section">
+                        <div class="step-header">💆 Cura del Viso / Face Care</div>
+                        <label>Prodotti Utilizzati / Products Used</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Idratante / Moisturizer"> Idratante / Moisturizer
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Lenitiva / Soothing"> Lenitiva / Soothing
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Contro l'acne / Anti-acne"> Contro l'acne / Anti-acne
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Antirughe / Anti-wrinkle"> Antirughe / Anti-wrinkle
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Anti-invecchiamento / Anti-aging"> Anti-invecchiamento / Anti-aging
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Protezione solare / Sunscreen"> Protezione solare / Sunscreen
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Schiarente / Brightening"> Schiarente / Brightening
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Contro le macchie / Anti-spots"> Contro le macchie / Anti-spots
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="products" value="Nessuna crema utilizzata / No cream used"> Nessuna crema utilizzata / No cream used
+                            </label>
+                        </div>
+                        <label for="usageFrequency">Frequenza d'Uso / Usage Frequency</label>
+                        <select id="usageFrequency" name="usageFrequency" required>
+                            <option value="Mai / Never">Mai / Never</option>
+                            <option value="Raramente / Rarely">Raramente / Rarely</option>
+                            <option value="1-2 volte a settimana / 1-2 times a week">1-2 volte a settimana / 1-2 times a week</option>
+                            <option value="3-4 volte a settimana / 3-4 times a week">3-4 volte a settimana / 3-4 times a week</option>
+                            <option value="Ogni giorno / Every day">Ogni giorno / Every day</option>
+                            <option value="Più volte al giorno / Multiple times a day">Più volte al giorno / Multiple times a day</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="step form-section">
+                <div class="step-header">🔍 Autovalutazione della Pelle / Skin Self-Assessment</div>
+                <label>Come definiresti la tua pelle? (seleziona tutte quelle applicabili) / How would you define your skin? (select all that apply)</label>
+                <div class="skin-type-container">
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle secca / Dry skin">
+                            <span class="skin-type-text">Pelle secca / Dry skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle grassa / Oily skin">
+                            <span class="skin-type-text">Pelle grassa / Oily skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle mista / Combination skin">
+                            <span class="skin-type-text">Pelle mista / Combination skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle normale / Normal skin">
+                            <span class="skin-type-text">Pelle normale / Normal skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle sensibile / Sensitive skin">
+                            <span class="skin-type-text">Pelle sensibile / Sensitive skin</span>
+                        </label>
+                    </div>
+                    <div class="skin-type-option">
+                        <label class="skin-type-label">
+                            <input type="checkbox" name="skinType" value="Pelle disidratata / Dehydrated skin">
+                            <span class="skin-type-text">Pelle disidratata / Dehydrated skin</span>
+                        </label>
+                    </div>
+                </div>
+                <label>Condizioni cutanee presenti (seleziona tutte quelle applicabili) / Existing skin conditions (select all that apply)</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Presenza costante di rossore / Constant redness"> Presenza costante di rossore / Constant redness
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Macchie cutanee / Skin spots"> Macchie cutanee / Skin spots
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Presenza di acne / Acne presence"> Presenza di acne / Acne presence
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Lentiggini / Freckles"> Lentiggini / Freckles
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Pelle atopica / Atopic skin"> Pelle atopica / Atopic skin
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Couperose / Couperose"> Couperose / Couperose
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Rosacea / Rosacea"> Rosacea / Rosacea
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Dermatite / Dermatitis"> Dermatite / Dermatitis
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Pelle spenta/opaca / Dull skin"> Pelle spenta/opaca / Dull skin
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Pori dilatati / Enlarged pores"> Pori dilatati / Enlarged pores
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Rughe marcate / Pronounced wrinkles"> Rughe marcate / Pronounced wrinkles
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Pelle sottile / Thin skin"> Pelle sottile / Thin skin
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="skinConditions" value="Nessuna condizione particolare / No particular condition"> Nessuna condizione particolare / No particular condition
+                    </label>
+                </div>
+                <label for="skinDescription">Breve descrizione della tua pelle (facoltativo) / Brief description of your skin (optional)</label>
+                <textarea id="skinDescription" name="skinDescription" placeholder="Es: La mia pelle è sensibile al freddo e tende a seccarsi d'inverno. / E.g.: My skin is sensitive to cold and tends to dry out in winter."></textarea>
+            </div>
+            <!-- Step 2: Selfie -->
+            <div class="step selfie-section">
+                <div class="step-header">📸 Foto del Viso (Obbligatoria) / Face Photo (Mandatory)</div>
+                <p>Posiziona il viso chiaramente nel riquadro della fotocamera. / Position your face clearly in the camera frame.</p>
+                 <!-- Istruzioni Selfie -->
+                 <div id="selfieInstructions" class="instructions"></div>
+                <!-- Example Selfie Image -->
+                <div class="example-image">
+                    <img src="assets/esempio_foto.png" alt="Esempio di selfie">
+                    <div>
+                        Esempio di selfie corretto / Example of a correct selfie
+                    </div>
+                </div>
+                <video id="selfieVideoElement"></video>
+                <canvas id="photoCanvas"></canvas>
+                <div class="media-controls">
+                    <button type="button" id="startCameraButton">Avvia Fotocamera / Start Camera</button>
+                    <button type="button" id="captureButton" disabled>Scatta Selfie / Take Selfie</button>
+                    <button type="button" id="retakeButton" style="display: none;">Ripeti / Retake</button>
+                </div>
+            </div>
+            <!-- Step 3: Video Recording -->
+            <div class="step video-section">
+                <div class="step-header">🎥 Video del Viso (Obbligatorio) / Face Video (Mandatory)</div>
+                <p>Registra un breve video del tuo viso, guardando dritto nella fotocamera. / Record a short video of your face, looking straight into the camera.</p>
+                <!-- Istruzioni Video -->
+                <div id="videoInstructions" class="instructions"></div>
+                <video id="videoElement"></video>
+                <video id="videoPreview" controls></video>
+                <div class="media-controls">
+                    <button type="button" id="recordButton" disabled>Avvia Registrazione / Start Recording</button>
+                    <button type="button" id="stopButton" disabled>Ferma / Stop</button>
+                    <button type="button" id="reRecordButton" style="display: none;">Riregistra / Re-record</button>
+                </div>
+            </div>
+            <!-- Step 4: Privacy -->
+            <div class="step privacy-section">
+                <div class="step-header">🔒 Informativa sulla Privacy (Art. 13 GDPR)</div>
+                <div id="privacyPolicyContent" class="privacy-policy">
+                    <!-- Contenuto Privacy Policy -->
+                </div>
+                <div class="privacy-consent">
+                    <input type="checkbox" id="privacyConsent" name="privacyConsent" required>
+                    <label for="privacyConsent">
+                        Dichiaro di aver letto e compreso l'informativa sulla privacy e presto il mio consenso al trattamento dei dati personali, foto e video per le finalità di ricerca indicate. / I declare that I have read and understood the privacy policy and give my consent to the processing of my personal data, photo, and video for the research purposes indicated.
+                    </label>
+                </div>
+            </div>
+            <div class="submit-section">
+                <button type="submit" id="submitFormButton" disabled>Invia Dati / Submit Data</button>
+                <div class="success-message" id="successMessage"></div>
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+        </form>
+    </div>
+    <!-- Caricamento dei file JavaScript -->
+    <script src="js/utils.js"></script>
+    <script src="js/selfieHandler.js"></script>
+    <script src="js/videoHandler.js"></script>
+    <script src="js/formHandler.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
